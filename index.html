@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EASYDATAHUB - Mobile Subscriptions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #f5f7fa;
+        }
+        
+        /* Professional color palette: deep navy + gold accents */
+        :root {
+            --navy-950: #0a0f1e;
+            --navy-900: #0f172a;
+            --navy-800: #1e293b;
+            --navy-700: #334155;
+            --gold-500: #d4a843;
+            --gold-400: #e0b95c;
+            --gold-300: #eccd85;
+        }
+        
+        /* Logo styling */
+        .brand-logo {
+            height: 42px;
+            width: 42px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(212, 168, 67, 0.2);
+        }
+        
+        .brand-name {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #0f172a;
+        }
+        
+        .brand-name span {
+            color: #d4a843;
+        }
+        
+        /* ===== BOTTOM NAVIGATION (Organized with center action button) ===== */
+        .bottom-nav {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 8px;
+            height: 64px;
+            position: relative;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px 10px;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+        
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item span {
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        
+        .nav-item.active {
+            color: #d4a843;
+        }
+        
+        .nav-item.active i {
+            transform: translateY(-1px);
+        }
+        
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 24px;
+            height: 2px;
+            background: #d4a843;
+            border-radius: 0 0 2px 2px;
+        }
+        
+        .nav-item:active {
+            transform: scale(0.92);
+        }
+        
+        /* Center action button - properly positioned */
+        .nav-action-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+            height: 64px;
+        }
+        
+        .nav-action-btn {
+            position: absolute;
+            bottom: 14px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #d4a843 0%, #e0b95c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f172a;
+            box-shadow: 0 4px 16px rgba(212, 168, 67, 0.45), 0 0 0 4px #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .nav-action-btn i {
+            font-size: 20px;
+            font-weight: 900;
+        }
+        
+        .nav-action-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 2px 8px rgba(212, 168, 67, 0.4), 0 0 0 4px #ffffff;
+        }
+        
+        /* Service grid */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .service-btn {
+            background: white;
+            border-radius: 16px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #d4a843, #e0b95c);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .service-btn:active {
+            transform: scale(0.96);
+            background: #f8fafc;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        
+        .service-btn:active::before {
+            opacity: 1;
+        }
+        
+        .service-btn i {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .service-btn .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.25;
+        }
+        
+        .service-btn .sub {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        
+        .service-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.4);
+        }
+        
+        /* Plan cards */
+        .plan-card {
+            transition: all 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            border: 1px solid #f1f5f9;
+        }
+        
+        .plan-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border-color: #d4a843;
+        }
+        
+        /* Modal animation */
+        .modal {
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        /* Page content padding for bottom nav */
+        .page-content {
+            padding-bottom: 90px;
+        }
+        
+        /* Hide scrollbar */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        
+        /* Header glass effect */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        /* Welcome banner - professional navy with gold accent */
+        .welcome-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(212, 168, 67, 0.15);
+        }
+        
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -15%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -10%;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .gold-text {
+            color: #d4a843;
+        }
+        
+        /* Professional button */
+        .btn-primary {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            font-weight: 700;
+            border-radius: 16px;
+            padding: 16px 24px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(212, 168, 67, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4a843, transparent);
+            opacity: 0.6;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        /* Gold accent button */
+        .btn-gold {
+            background: linear-gradient(135deg, #d4a843 0%, #e0b95c 100%);
+            color: #0f172a;
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 12px 20px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(212, 168, 67, 0.3);
+        }
+        
+        .btn-gold:active {
+            transform: scale(0.96);
+        }
+        
+        /* ===== LOGIN PAGE - PLAIN & PROFESSIONAL ===== */
+        .login-bg {
+            background: linear-gradient(160deg, #0a0f1e 0%, #0f172a 40%, #1e293b 100%);
+            position: relative;
+        }
+        
+        .login-bg::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.08) 0%, transparent 60%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .login-bg::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -20%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(212, 168, 67, 0.05) 0%, transparent 60%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .login-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(212, 168, 67, 0.12);
+        }
+        
+        .login-input {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        
+        .login-input:focus {
+            outline: none;
+            border-color: #d4a843;
+            box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.1);
+            background: #ffffff;
+        }
+        
+        .login-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+        
+        /* Gold divider */
+        .gold-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4a843, transparent);
+            opacity: 0.3;
+        }
+        
+        /* Subtle badge */
+        .badge-gold {
+            background: rgba(212, 168, 67, 0.1);
+            color: #d4a843;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(212, 168, 67, 0.15);
+        }
+        
+        /* Card active state for network selection */
+        .network-card {
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+        }
+        
+        .network-card.selected {
+            border-color: #d4a843 !important;
+            background: rgba(212, 168, 67, 0.04);
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(212, 168, 67, 0.12);
+        }
+        
+        /* Apple Card style gift icon */
+        .apple-card-icon {
+            background: linear-gradient(135deg, #1d1d1f 0%, #3a3a3c 100%);
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <!-- ==================== LOGIN PAGE (PLAIN) ==================== -->
+    <div id="landing-page" class="min-h-screen flex items-center justify-center login-bg p-4 relative overflow-hidden">
+        
+        <!-- Decorative grid pattern -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0); background-size: 40px 40px;"></div>
+        
+        <div class="max-w-sm w-full login-card p-8 relative z-10">
+            
+            <!-- Logo + Brand -->
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-4">
+                    <img src="https://cdn.phototourl.com/member/2026-10-23-1cd20cdd-aec3-4707-b91f-dd639be390c4.png" 
+                         alt="EASYDATAHUB Logo" 
+                         class="w-20 h-20 object-contain rounded-2xl shadow-lg bg-white p-1.5 border border-slate-100">
+                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">
+                    EASY<span class="text-amber-500">DATA</span>HUB
+                </h1>
+                <p class="text-slate-500 text-sm font-medium">Premium Mobile Services</p>
+                <div class="gold-divider w-16 mx-auto mt-4"></div>
+            </div>
+            
+            <!-- Login Form (plain, no tabs) -->
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Full Name</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input id="user-name-input" type="text" placeholder="Enter your full name"
+                               class="login-input pl-11">
+                    </div>
+                </div>
+                
+                <button onclick="startApp()"
+                        class="btn-primary w-full text-base flex items-center justify-center gap-2">
+                    <span>Continue to Dashboard</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-amber-400"></i>
+                </button>
+            </div>
+            
+            <p class="text-[9px] text-slate-400 mt-8 text-center font-medium tracking-widest uppercase">USA Mobile Services • eSIM • Prepaid Plans</p>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div id="dashboard-page" class="hidden min-h-screen bg-slate-50">
+        <!-- Header -->
+        <header class="header-glass sticky top-0 z-40">
+            <div class="px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <img src="https://cdn.phototourl.com/member/2026-10-23-1cd20cdd-aec3-4707-b91f-dd639be390c4.png" 
+                         alt="EASYDATAHUB Logo" 
+                         class="brand-logo">
+                    <div>
+                        <h1 class="text-[15px] font-extrabold leading-tight tracking-tight">
+                            EASY<span class="gold-text">DATA</span>HUB
+                        </h1>
+                        <div class="text-[9px] text-slate-400 font-semibold tracking-wider">MOBILE SERVICES</div>
+                    </div>
+                </div>
+                <div onclick="showProfile()" class="flex items-center gap-2.5 cursor-pointer active:opacity-70 transition-opacity">
+                    <div class="text-right">
+                        <div class="font-bold text-[13px] text-slate-800" id="display-name">User</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Welcome back</div>
+                    </div>
+                    <div class="w-9 h-9 bg-gradient-to-br from-slate-800 to-slate-900 text-amber-400 rounded-xl flex items-center justify-center shadow-sm border border-amber-500/20">
+                        <i class="fa-solid fa-user text-[13px]"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="px-4 pt-5 page-content">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner p-5 mb-5 shadow-xl shadow-slate-900/10">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="badge-gold">PREMIUM</span>
+                        <span class="text-white/50 text-[10px] font-medium">Active Account</span>
+                    </div>
+                    <div class="text-white/70 text-xs font-medium mb-0.5">Welcome back,</div>
+                    <div class="text-white text-xl font-extrabold mb-4" id="welcome-name">User</div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white/8 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/10 flex-1">
+                            <div class="text-white/60 text-[9px] font-semibold uppercase tracking-wider">Balance</div>
+                            <div class="text-white text-lg font-extrabold" id="balance-display">$0.00</div>
+                        </div>
+                        <button onclick="openFundsModal()" 
+                                class="btn-gold flex items-center gap-1.5 text-xs whitespace-nowrap">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span>Add Funds</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services -->
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-sm font-extrabold text-slate-800 tracking-tight">Our Services</h2>
+                <span class="text-[10px] text-amber-600 font-bold">View all</span>
+            </div>
+            
+            <div class="service-grid">
+                <!-- 1. Buy Prepaid Data -->
+                <div onclick="navigateTo('data-page')" class="service-btn">
+                    <div class="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center mb-1 border border-amber-100">
+                        <i class="fa-solid fa-sim-card text-amber-600 text-lg"></i>
+                    </div>
+                    <div class="label">Buy Data</div>
+                    <div class="sub">eSIM • Hotspot</div>
+                </div>
+                
+                <!-- 2. Refill Minutes & Text -->
+                <div onclick="comingSoon()" class="service-btn">
+                    <div class="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-phone text-slate-600 text-lg"></i>
+                    </div>
+                    <div class="label">Refill Minutes</div>
+                    <div class="sub">& Text</div>
+                </div>
+                
+                <!-- 3. TV & Streaming -->
+                <div onclick="comingSoon()" class="service-btn">
+                    <div class="w-11 h-11 bg-rose-50 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-tv text-rose-500 text-lg"></i>
+                    </div>
+                    <div class="label">TV & Streaming</div>
+                </div>
+                
+                <!-- 4. Utility Bills -->
+                <div onclick="comingSoon()" class="service-btn">
+                    <div class="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-bolt text-amber-600 text-lg"></i>
+                    </div>
+                    <div class="label">Utility Bills</div>
+                </div>
+                
+                <!-- 5. Data Card -->
+                <div onclick="comingSoon()" class="service-btn">
+                    <div class="w-11 h-11 bg-emerald-50 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-credit-card text-emerald-600 text-lg"></i>
+                    </div>
+                    <div class="label">Data Card</div>
+                </div>
+                
+                <!-- 6. WiFi Hotspot Plans -->
+                <div onclick="navigateTo('hotspot-page')" class="service-btn">
+                    <div class="w-11 h-11 bg-cyan-50 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-wifi text-cyan-600 text-lg"></i>
+                    </div>
+                    <div class="label">WiFi Hotspot</div>
+                    <div class="sub">Plans</div>
+                </div>
+                
+                <!-- 7. International Roaming -->
+                <div onclick="comingSoon()" class="service-btn disabled">
+                    <div class="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-globe text-slate-400 text-lg"></i>
+                    </div>
+                    <div class="label">International</div>
+                    <div class="sub">Roaming</div>
+                </div>
+                
+                <!-- 8. Insurance -->
+                <div onclick="comingSoon()" class="service-btn disabled">
+                    <div class="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-shield-halved text-slate-400 text-lg"></i>
+                    </div>
+                    <div class="label">Insurance</div>
+                </div>
+                
+                <!-- 9. Location Services -->
+                <div onclick="comingSoon()" class="service-btn disabled">
+                    <div class="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-location-dot text-slate-400 text-lg"></i>
+                    </div>
+                    <div class="label">Location</div>
+                    <div class="sub">Services</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== BOTTOM NAVIGATION (Organized) ===== -->
+        <nav class="bottom-nav">
+            <div class="nav-container">
+                <!-- Home -->
+                <div class="nav-item active" onclick="switchTab(this, 'home')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </div>
+                
+                <!-- Services -->
+                <div class="nav-item" onclick="switchTab(this, 'services')">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>Services</span>
+                </div>
+                
+                <!-- Center Action Button (Add Funds) - Properly positioned -->
+                <div class="nav-action-wrapper">
+                    <button class="nav-action-btn" onclick="openFundsModal()" aria-label="Add Funds">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                
+                <!-- Wallet -->
+                <div class="nav-item" onclick="switchTab(this, 'wallet')">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Wallet</span>
+                </div>
+                
+                <!-- Profile -->
+                <div class="nav-item" onclick="switchTab(this, 'profile')">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span>Profile</span>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ==================== DATA PAGE ==================== -->
+    <div id="data-page" class="hidden min-h-screen bg-slate-50">
+        <div class="px-4 py-4 page-content">
+            <button onclick="goBackToDashboard()" class="flex items-center gap-2 text-slate-700 text-sm font-semibold mb-5 active:opacity-70 transition-opacity">
+                <i class="fa-solid fa-arrow-left text-xs text-amber-500"></i> Back
+            </button>
+            
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">Buy Prepaid Data</h1>
+            <p class="text-slate-500 text-sm mb-6 font-medium">Choose your preferred network</p>
+            
+            <div class="grid grid-cols-3 gap-3 mb-6">
+                <div onclick="selectNetwork(this)" data-network="T-Mobile" 
+                     class="network-card bg-white rounded-2xl p-4 text-center cursor-pointer shadow-sm">
+                    <div class="w-12 h-12 mx-auto bg-pink-50 rounded-xl flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-signal text-pink-500 text-xl"></i>
+                    </div>
+                    <div class="text-sm font-bold text-slate-800">T-Mobile</div>
+                </div>
+                <div onclick="selectNetwork(this)" data-network="AT&T" 
+                     class="network-card bg-white rounded-2xl p-4 text-center cursor-pointer shadow-sm">
+                    <div class="w-12 h-12 mx-auto bg-blue-50 rounded-xl flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-broadcast-tower text-blue-500 text-xl"></i>
+                    </div>
+                    <div class="text-sm font-bold text-slate-800">AT&T</div>
+                </div>
+                <div onclick="selectNetwork(this)" data-network="Verizon" 
+                     class="network-card bg-white rounded-2xl p-4 text-center cursor-pointer shadow-sm">
+                    <div class="w-12 h-12 mx-auto bg-red-50 rounded-xl flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-satellite-dish text-red-500 text-xl"></i>
+                    </div>
+                    <div class="text-sm font-bold text-slate-800">Verizon</div>
+                </div>
+            </div>
+            
+            <div id="plan-selection-area" class="hidden">
+                <button onclick="showPlans()" 
+                        class="btn-primary w-full text-base">
+                    Select Plan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PLAN CATALOG ==================== -->
+    <div id="plan-catalog-page" class="hidden min-h-screen bg-slate-50">
+        <div class="px-4 py-4 page-content">
+            <button onclick="goBackToDataPage()" class="flex items-center gap-2 text-slate-700 text-sm font-semibold mb-5 active:opacity-70 transition-opacity">
+                <i class="fa-solid fa-arrow-left text-xs text-amber-500"></i> Back to Networks
+            </button>
+            
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-1 tracking-tight">Weekly Data Plans</h1>
+            <p class="text-slate-500 text-sm mb-4 font-medium">Choose the perfect plan for your needs</p>
+            
+            <div id="plans-container" class="grid grid-cols-1 gap-3 pb-6">
+                <!-- Plans injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAYMENT PAGE ==================== -->
+    <div id="payment-page" class="hidden min-h-screen bg-slate-50">
+        <div class="px-4 py-6 max-w-md mx-auto page-content">
+            <button onclick="goBackToPlans()" class="flex items-center gap-2 text-slate-700 text-sm font-semibold mb-6 active:opacity-70 transition-opacity">
+                <i class="fa-solid fa-arrow-left text-xs text-amber-500"></i> Back
+            </button>
+            
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                <h2 class="text-lg font-extrabold mb-5 text-center text-slate-900 tracking-tight">Order Summary</h2>
+                
+                <div class="border border-dashed border-slate-200 rounded-2xl p-4 mb-6 bg-slate-50/50">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-slate-500 text-sm font-medium">Selected Plan</span>
+                        <span id="selected-plan-name" class="font-bold text-sm text-slate-800 text-right"></span>
+                    </div>
+                    <div class="flex justify-between items-center pt-3 border-t border-slate-200/60">
+                        <span class="text-slate-800 font-bold">Total</span>
+                        <span id="selected-plan-price" class="text-2xl font-extrabold text-emerald-600"></span>
+                    </div>
+                </div>
+                
+                <button onclick="showPaymentModal()" 
+                        class="btn-primary w-full text-base">
+                    Make Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAYMENT MODAL (Apple Card) ==================== -->
+    <div id="payment-modal" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+        <div class="modal bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-slate-100">
+            <div class="p-6">
+                <div class="text-center mb-5">
+                    <div class="w-16 h-16 mx-auto apple-card-icon rounded-2xl flex items-center justify-center mb-3 shadow-lg">
+                        <i class="fa-brands fa-apple text-3xl text-white"></i>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-slate-900">Apple Card Payment</h3>
+                    <p class="text-slate-500 text-sm mt-1 font-medium">Upload your Apple Card gift card</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Amount to pay</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400 font-bold">$</span>
+                            <input id="giftcard-amount" type="text" readonly
+                                   class="w-full pl-9 pr-4 py-3.5 border border-slate-200 rounded-xl text-2xl font-extrabold text-slate-900 bg-slate-50 focus:outline-none">
+                        </div>
+                    </div>
+                    
+                    <button onclick="processPayment()" 
+                            class="w-full bg-gradient-to-r from-slate-800 to-black text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-slate-900/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-apple text-lg"></i>
+                        <span>Upload Apple Card</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-100">
+                <button onclick="closeModal()" class="w-full text-slate-500 py-4 text-sm font-bold active:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ADD FUNDS MODAL (Apple Card) ==================== -->
+    <div id="funds-modal" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+        <div class="modal bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-slate-100">
+            <div class="p-6">
+                <div class="text-center mb-5">
+                    <div class="w-16 h-16 mx-auto apple-card-icon rounded-2xl flex items-center justify-center mb-3 shadow-lg">
+                        <i class="fa-brands fa-apple text-3xl text-white"></i>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-slate-900">Add Funds</h3>
+                    <p class="text-slate-500 text-sm mt-1 font-medium">Top up with Apple Card gift card</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Amount to add</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400 font-bold">$</span>
+                            <input id="funds-amount" type="number" min="1" placeholder="0.00"
+                                   class="w-full pl-9 pr-4 py-3.5 border border-slate-200 rounded-xl text-2xl font-extrabold text-slate-900 bg-slate-50 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20">
+                        </div>
+                    </div>
+                    
+                    <button onclick="processFunds()" 
+                            class="w-full bg-gradient-to-r from-slate-800 to-black text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-slate-900/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-apple text-lg"></i>
+                        <span>Upload Apple Card</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-100">
+                <button onclick="closeFundsModal()" class="w-full text-slate-500 py-4 text-sm font-bold active:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = "";
+        let selectedNetwork = "";
+        let selectedPlan = null;
+        
+        const plans = [
+            { name: "Weekly Mini", data: "20 GB", price: 25 },
+            { name: "Weekly Lite", data: "26 GB", price: 30 },
+            { name: "Weekly Basic", data: "29 GB", price: 32 },
+            { name: "Weekly Standard", data: "33 GB", price: 35 },
+            { name: "Weekly Plus", data: "38 GB", price: 38 },
+            { name: "Weekly Super", data: "42 GB", price: 40 },
+            { name: "Weekly Heavy", data: "46 GB", price: 42 },
+            { name: "Weekly Mega", data: "52 GB", price: 45 },
+            { name: "Weekly Ultra", data: "55 GB", price: 46 },
+            { name: "Weekly Grand", data: "60 GB", price: 48 },
+            { name: "Weekly Max", data: "65 GB", price: 50 }
+        ];
+        
+        function startApp() {
+            const nameInput = document.getElementById("user-name-input").value.trim();
+            currentUser = nameInput || "Valued Customer";
+            document.getElementById("landing-page").classList.add("hidden");
+            document.getElementById("dashboard-page").classList.remove("hidden");
+            document.getElementById("display-name").textContent = currentUser;
+            document.getElementById("welcome-name").textContent = currentUser;
+        }
+        
+        function navigateTo(page) {
+            document.getElementById("dashboard-page").classList.add("hidden");
+            if (page === 'data-page') {
+                document.getElementById("data-page").classList.remove("hidden");
+            } else if (page === 'hotspot-page') {
+                alert("WiFi Hotspot Plans coming soon!");
+                document.getElementById("dashboard-page").classList.remove("hidden");
+            }
+        }
+        
+        function goBackToDashboard() {
+            document.getElementById("data-page").classList.add("hidden");
+            document.getElementById("plan-catalog-page").classList.add("hidden");
+            document.getElementById("payment-page").classList.add("hidden");
+            document.getElementById("dashboard-page").classList.remove("hidden");
+        }
+        
+        function goBackToDataPage() {
+            document.getElementById("plan-catalog-page").classList.add("hidden");
+            document.getElementById("data-page").classList.remove("hidden");
+        }
+        
+        function goBackToPlans() {
+            document.getElementById("payment-page").classList.add("hidden");
+            document.getElementById("plan-catalog-page").classList.remove("hidden");
+        }
+        
+        function selectNetwork(el) {
+            document.querySelectorAll('.network-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            el.classList.add('selected');
+            selectedNetwork = el.dataset.network;
+            document.getElementById("plan-selection-area").classList.remove("hidden");
+        }
+        
+        function showPlans() {
+            if (!selectedNetwork) {
+                alert("Please select a network first.");
+                return;
+            }
+            document.getElementById("data-page").classList.add("hidden");
+            document.getElementById("plan-catalog-page").classList.remove("hidden");
+            
+            const container = document.getElementById("plans-container");
+            container.innerHTML = "";
+            
+            plans.forEach(plan => {
+                container.innerHTML += `
+                    <div onclick="selectPlan(${plan.price}, '${plan.name} - ${plan.data}')" 
+                         class="plan-card bg-white rounded-2xl p-4 flex justify-between items-center cursor-pointer active:bg-slate-50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-100">
+                                <i class="fa-solid fa-wifi text-amber-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-amber-600 uppercase tracking-wide">${selectedNetwork}</div>
+                                <div class="font-bold text-sm text-slate-800 mt-0.5">${plan.name}</div>
+                                <div class="text-xs text-slate-400 font-medium">Weekly Plan</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-extrabold text-emerald-600">$${plan.price}</div>
+                            <div class="text-xs font-bold text-slate-800 mt-0.5">${plan.data}</div>
+                            <div class="text-[10px] text-amber-600 mt-1 font-bold">Choose →</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        function selectPlan(price, name) {
+            selectedPlan = { price, name };
+            document.getElementById("plan-catalog-page").classList.add("hidden");
+            document.getElementById("payment-page").classList.remove("hidden");
+            document.getElementById("selected-plan-name").textContent = name;
+            document.getElementById("selected-plan-price").textContent = `$${price}`;
+        }
+        
+        function showPaymentModal() {
+            if (!selectedPlan) return;
+            document.getElementById("giftcard-amount").value = selectedPlan.price;
+            document.getElementById("payment-modal").classList.remove("hidden");
+        }
+        
+        function closeModal() {
+            document.getElementById("payment-modal").classList.add("hidden");
+        }
+        
+        function processPayment() {
+            closeModal();
+            setTimeout(() => {
+                window.location.href = "mailto:datahub1@usa.com?subject=Apple%20Card%20Subscription%20Payment";
+            }, 400);
+        }
+        
+        // ===== ADD FUNDS MODAL FUNCTIONS =====
+        function openFundsModal() {
+            document.getElementById("funds-amount").value = "";
+            document.getElementById("funds-modal").classList.remove("hidden");
+        }
+        
+        function closeFundsModal() {
+            document.getElementById("funds-modal").classList.add("hidden");
+        }
+        
+        function processFunds() {
+            const amount = document.getElementById("funds-amount").value;
+            if (!amount || parseFloat(amount) <= 0) {
+                alert("Please enter a valid amount to add.");
+                return;
+            }
+            closeFundsModal();
+            setTimeout(() => {
+                window.location.href = "mailto:datahub1@usa.com?subject=Apple%20Card%20Add%20Funds&body=Amount:%20$" + amount;
+            }, 400);
+        }
+        
+        function showProfile() {
+            alert(`Hello ${currentUser}!\n\nAccount Status: Active\nWallet: $0.00`);
+        }
+        
+        function comingSoon() {
+            alert("This feature is coming soon to EASYDATAHUB.");
+        }
+        
+        function switchTab(el, tab) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            
+            if (tab === 'home') {
+                goBackToDashboard();
+            } else if (tab === 'services') {
+                goBackToDashboard();
+            } else if (tab === 'wallet') {
+                openFundsModal();
+            } else if (tab === 'profile') {
+                showProfile();
+            }
+        }
+    </script>
+</body>
+</html>
